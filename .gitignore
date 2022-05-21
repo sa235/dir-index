@@ -5,3 +5,5 @@
 /src/.vs
 /src/DirIndex/bin
 /src/DirIndex/obj
+/src/SampleTreeGen/bin/Debug/net6.0
+/src/SampleTreeGen/obj
