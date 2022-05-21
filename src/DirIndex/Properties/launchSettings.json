@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DirIndex": {
+      "commandName": "Project",
+      "commandLineArgs": "C:\\Projects\\dir-index\\src\\DirIndex\\bin\\Debug\\sample"
+    }
+  }
+}
