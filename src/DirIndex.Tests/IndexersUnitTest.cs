@@ -16,8 +16,17 @@ namespace DirIndex.Tests
 
             Console.WriteLine(testPath);
 
-            var indexer = new Indexer(testPath, testPath);
-            indexer.CreateExelIndex();
+            try
+            {
+                var indexer = new Indexer(testPath, testPath);
+                indexer.CreateExelIndex();
+                Console.WriteLine($"Indexing complete");
+                Console.WriteLine($"Index file: {indexer.OutFileName}");
+            }
+            catch (Exception er)
+            {
+                Console.WriteLine(er.ToString());
+            }
 
             outFiles = Directory.GetFiles(testPath, "DirIndex_*.xlsx");
             Assert.AreEqual(1, outFiles.Length);
