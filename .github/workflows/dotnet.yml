@@ -20,6 +20,6 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore ./src
     - name: Build
-      run: dotnet build ./src/DirIndex --no-restore 
+      run: dotnet build ./src --no-restore 
     - name: Test
       run: dotnet test ./src/DirIndex.Tests --no-build --verbosity normal
