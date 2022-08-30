@@ -1,5 +1,4 @@
-﻿
-using Serilog;
+﻿using Serilog;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -9,6 +8,7 @@ Log.Logger = new LoggerConfiguration()
 Log.Information("Directory indexing tool");
 
 string? indexDir;
+
 if (args.Length > 0)
 {
     indexDir = args[0];
@@ -19,15 +19,38 @@ else
     indexDir = Console.ReadLine();
 }
 
-if(!Directory.Exists(indexDir))
+string? outDir;
+
+if (args.Length > 1)
+{
+    outDir = args[1];
+}
+else
+{
+    Console.Write("Input (or skip) out directory path:");
+    outDir = Console.ReadLine();
+
+    if(string.IsNullOrEmpty(outDir))
+    {
+        outDir = Directory.GetCurrentDirectory();
+    }
+}
+
+if (!Directory.Exists(indexDir))
 {
     Log.Error($"Directory not exist: ({indexDir})");
     return;
 }
 
+if (!Directory.Exists(outDir))
+{
+    Log.Error($"Directory not exist: ({outDir})");
+    return;
+}
+
 Log.Information($"Indexing dirrectory: {indexDir}");
 
-var indexer = new Indexer(indexDir);
+var indexer = new Indexer(indexDir, outDir);
 try
 {
     indexer.CreateExelIndex();

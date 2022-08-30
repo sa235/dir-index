@@ -7,10 +7,10 @@ public class Indexer
     private readonly string indexDir;
     public readonly string OutFileName;
 
-    public Indexer(string indexDir)
+    public Indexer(string indexDir, string outDir)
     {
         this.indexDir = indexDir;
-        OutFileName = indexDir + $"\\DirIndex_{DateTime.Now.Minute}.xlsx";
+        OutFileName = outDir + $"\\DirIndex_{DateTime.Now.Minute}.xlsx";
     }
 
     public void CreateExelIndex()
