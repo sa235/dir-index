@@ -6,8 +6,10 @@
 
     public PathParts(string filePath)
     {
-        this.Path = filePath.TrimStart('\\');
-        var parts = this.Path.Split("\\");
+        var delimiter = filePath.Contains("\\") ? '\\' : '/';
+
+        this.Path = filePath.TrimStart(delimiter);
+        var parts = this.Path.Split(delimiter);
         Rank = parts.Length - 1;
         for (int i = 0; i < Rank; i++)
         {
