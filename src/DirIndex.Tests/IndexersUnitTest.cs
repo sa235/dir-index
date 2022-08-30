@@ -14,11 +14,13 @@ namespace DirIndex.Tests
                 File.Delete(fi);
             }
 
+            Console.WriteLine(testPath);
+
             var indexer = new Indexer(testPath, testPath);
             indexer.CreateExelIndex();
 
             outFiles = Directory.GetFiles(testPath, "DirIndex_*.xlsx");
-            Assert.AreEqual(outFiles.Length, 1);
+            Assert.AreEqual(1, outFiles.Length);
         }
     }
 }
