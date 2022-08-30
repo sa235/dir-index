@@ -7,3 +7,5 @@
 /src/DirIndex/obj
 /src/SampleTreeGen/bin/Debug/net6.0
 /src/SampleTreeGen/obj
+/src/DirIndex.Tests/bin/Debug/net6.0
+/src/DirIndex.Tests/obj
