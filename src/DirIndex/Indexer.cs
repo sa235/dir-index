@@ -2,36 +2,49 @@
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
 
+
 public class Indexer
 {
+    public const int excelMaxRow = 1048576;
     private readonly string indexDir;
     public readonly string OutFileName;
 
     public Indexer(string indexDir, string outDir)
     {
         this.indexDir = indexDir;
-        OutFileName = outDir + $"{Path.DirectorySeparatorChar}DirIndex_{DateTime.Now.Minute}.xlsx";
+        OutFileName = outDir + $"{Path.DirectorySeparatorChar}DirIndex_{DateTime.Now.Minute}_{Path.GetRandomFileName()}.xlsx";
     }
 
     public void CreateExelIndex()
     {
         IWorkbook workbook = new XSSFWorkbook();
-        ISheet sheet1 = workbook.CreateSheet("Index");
 
         ICellStyle headerStyle = CreateHeaderCellStyle(workbook);
         ICellStyle dateTimeStyle = CreateDateTimeCellStyle(workbook);
 
+        int sheetIndex = 1;
         var rowIndex = 0;
         int maxRank = 0;
 
-        IRow header = sheet1.CreateRow(rowIndex);
-        AddBaseHeader(headerStyle, header);
-        rowIndex++;
+        ISheet sheet1 = null;
+        IRow header = null;
 
+        using var fs = new FileStream(OutFileName, FileMode.Create, FileAccess.Write);
+        
         foreach (FileInfo fi in Scan(indexDir))
         {
-            var relativePath = GetRelativePath(fi.FullName);
-            Console.WriteLine(relativePath);
+            if (rowIndex == 0)
+            {
+                sheet1 = workbook.CreateSheet($"Index_{sheetIndex++}");
+                header = sheet1.CreateRow(rowIndex);
+                AddBaseHeader(headerStyle, header);
+                rowIndex++;
+            }
+
+            //var relativePath = GetRelativePath(fi.FullName);
+            var relativePath = Path.GetRelativePath(indexDir, fi.FullName);
+
+            Console.WriteLine($"{rowIndex} {relativePath}");
 
             var item = new PathParts(relativePath);
 
@@ -65,8 +78,20 @@ public class Indexer
             }
 
             rowIndex++;
+
+            if (rowIndex % excelMaxRow == 0)
+            {
+                FinalizeSheet(sheet1, header, headerStyle, maxRank);                
+                rowIndex = 0;                
+            }
         }
 
+        FinalizeSheet(sheet1, header, headerStyle, maxRank);
+        workbook.Write(fs);
+    }
+
+    private static void FinalizeSheet(ISheet sheet1, IRow header, ICellStyle headerStyle, int maxRank)
+    {
         for (int i = 0; i < maxRank; i++)
         {
             var cell = header.CreateCell(i + 5);
@@ -80,9 +105,6 @@ public class Indexer
 
         sheet1.SetAutoFilter(new CellRangeAddress(0, 0, 0, maxRank + 5 - 1));
         sheet1.CreateFreezePane(0, 1);
-
-        using var fs = new FileStream(OutFileName, FileMode.Create, FileAccess.Write);
-        workbook.Write(fs);
     }
 
     private ICellStyle CreateDateTimeCellStyle(IWorkbook workbook)
